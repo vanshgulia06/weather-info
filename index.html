@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Info Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .weather-box {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            width: 350px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #fff;
+            color: #333;
+            border: none;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #f1f1f1;
+        }
+
+        .weather-icon {
+            width: 100px;
+            margin-top: 20px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="weather-box">
+    <h2>🌦️ Weather Info</h2>
+    <input type="text" id="city" placeholder="Enter city name">
+    <br>
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div id="result">
+        <img id="icon" class="weather-icon" alt="Weather Icon">
+        <p id="temp"></p>
+        <p id="humidity"></p>
+        <p id="desc"></p>
+    </div>
+</div>
+
+<script>
+    async function getWeather() {
+        let city = document.getElementById("city").value;
+
+        if (city === "") {
+            alert("Please enter city name");
+            return;
+        }
+
+        const apiKey = "ba4e5722923cb617b1b8be90f863b7d7";  // ← Insert your API key here
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+        let response = await fetch(url);
+        let data = await response.json();
+
+        if (data.cod === "404") {
+            alert("City not found!");
+            return;
+        }
+
+        document.getElementById("result").style.display = "block";
+
+        document.getElementById("temp").innerHTML = `🌡 Temperature: ${data.main.temp}°C`;
+        document.getElementById("humidity").innerHTML = `💧 Humidity: ${data.main.humidity}%`;
+        document.getElementById("desc").innerHTML = `🌥 Condition: ${data.weather[0].description}`;
+
+        let iconCode = data.weather[0].icon;
+        document.getElementById("icon").src =
+            `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    }
+</script>
+
+</body>
+</html>
